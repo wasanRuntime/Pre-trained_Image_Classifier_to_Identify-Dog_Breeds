@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/get_pet_labels.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:                                  
-# REVISED DATE: 
+# PROGRAMMER: Andrew
+# DATE CREATED:                                
+# REVISED DATE: 14/01/2024  
 # PURPOSE: Create the function get_pet_labels that creates the pet labels from 
 #          the image's filename. This function inputs: 
 #           - The Image Folder as image_dir within get_pet_labels function and 
@@ -40,56 +40,35 @@ def get_pet_labels(image_dir):
       List. The list contains for following item:
          index 0 = pet image label (string)
     """
-    # list items in directory with pet images
-    filename_list = listdir(image_dir)
-    
-    # print to check file names 
-    print('\n10 filenames from folder pet_images')
-    
-    # create empty list for pet labels
-    pet_labels = []
-    
-    # create empty dictionary    
+    in_files = listdir(image_dir)
     results_dic = dict()
-    # iterate over each file name to save the pet name individually
-    for index in range(0, len(filename_list), 1):
-        if filename_list[index][0] != ".":
-            pet_label = ''
-            pet_image_filename = filename_list[index]
-            word_list_pet_image_filename = pet_image_filename.lower().split('_')
-            pet_name = ''
-            
-            for word in word_list_pet_image_filename:
-                if word.isalpha():
-                    pet_name += word + " "
-            
-            pet_name = pet_name.strip()
-            print('Filename = ', pet_image_filename, '    label = ', pet_name)
-            #The pet names should be saved in a list or sth. --> pet_labels
-            # pet_labels.append(pet_name)
-                      
-            print('\n{:2d} file: {:>25}'.format(index + 1, filename_list[index]))
-   
-            # count length of empty dictionary
-            number_of_items_empty_dic = len(results_dic)
-    
-            print('\nEmpty dictionary has {} items'.format(number_of_items_empty_dic))
-    
-            # add every element of pet_labels as a value to the results_dic
-            if filename_list[index] not in results_dic:
-                results_dic[filename_list[index]] = [pet_name]# what does filenames refer to, here?
-            else:
-                print('\nWARNING: key =' , filenames[index],  'already exists in results_dic with value =', results_dic[filenames[index]])
-          
-    print('\nPrinting all key-value pairs in dictionary results_dic:')
-    for key in results_dic:
-          print('\nfilename = ', key, '    pet label = ', results_dic[key][0])
-            
-    # count length in full dictionary
-    number_of_items_full_dic = len(results_dic)
-    print('\nEmpty dictionary has {} items'.format(number_of_items_full_dic))
-    
-          
-    # Replace None with the results_dic dictionary that you created with this
-    # function
+
+    for idx in range(0, len(in_files), 1):
+       
+       # Skips file if starts with . (like .DS_Store of Mac OSX) because it 
+       # isn't an pet image file
+       if in_files[idx][0] != ".":
+
+           # TODO: 2a. BELOW REPLACE pass with CODE that will process each 
+           #          filename in the in_files list to extract the dog breed 
+           #          name from the filename. Recall that each filename can be
+           #          accessed by in_files[idx]. Be certain to place the 
+           #          extracted dog breed name in the variable pet_label 
+           #          that's created as an empty string ABOVE
+           low_pet_image = in_files[idx].lower()
+           word_list_pet_image = low_pet_image.split("_")
+           pet_name = ""
+           for word in word_list_pet_image:
+               if word.isalpha():
+                   pet_name += word + " "
+           pet_name = pet_name.strip()
+           if in_files[idx] not in results_dic:
+              results_dic[in_files[idx]] = [pet_name]
+              
+           else:
+               print("** Warning: Duplicate files exist in directory:", 
+                     in_files[idx])
+
+        
+     
     return results_dic
