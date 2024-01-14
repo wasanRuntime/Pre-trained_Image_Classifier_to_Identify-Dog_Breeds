@@ -26,11 +26,6 @@
 #         This function does not output anything other than printing a summary
 #         of the final results.
 ##
-# TODO 6: Define print_results function below, specifically replace the None
-#       below by the function definition of the print_results function. 
-#       Notice that this function doesn't to return anything because it  
-#       prints a summary of the results using results_dic and results_stats_dic
-# 
 def print_results(results_dic, results_stats_dic, model, 
                   print_incorrect_dogs = False, print_incorrect_breed = False):
     """
@@ -62,19 +57,50 @@ def print_results(results_dic, results_stats_dic, model,
     Returns:
            None - simply printing results.
     """    
-    print('\nModel used: {}'.format(model))
-    print('\nNumber of Images: {} \nNumber of Dog Images: {} \nNumber of "Not-a" Dog Images: {}'.format(results_stats_dic['n_images'], results_stats_dic['n_dogs_img'], results_stats_dic['n_notdogs_img']))
-    
+    # Prints summary statistics over the run
+    print("\n\n*** Results Summary for CNN Model Architecture",model.upper(), 
+          "***")
+    print("{}: {}".format('N Images', results_stats_dic['n_images']))
+    print("{}: {}".format('N Dog Images', results_stats_dic['n_dogs_img']))
+    print("{}: {}".format('N Not-Dog Images', results_stats_dic['n_notdogs_img']))
+
+    # Prints summary statistics (percentages) on Model Run
+    print("\nSummary statistics on Model Run:")
     for key in results_stats_dic:
         if key[0] == 'p':
-            print('{}: {}'.format(key, results_stats_dic[key]))
-            
-    if print_incorrect_dogs == True and (results_stats_dic['n_correct_dogs'] + results_stats_dic['n_correct_notdogs'] != results_stats_dic['n_images']):
+            print("{}: {}".format(key, results_stats_dic[key]))
+
+    # IF print_incorrect_dogs == True AND there were images incorrectly 
+    # classified as dogs or vice versa - print out these cases
+    if (print_incorrect_dogs and 
+        ( (results_stats_dic['n_correct_dogs'] + results_stats_dic['n_correct_notdogs'])
+          != results_stats_dic['n_images'] ) 
+       ):
+        print("\nINCORRECT Dog/NOT Dog Assignments:")
+
+        # process through results dict, printing incorrectly classified dogs
         for key in results_dic:
-            if sum(results_dic[key][3:]) == 1:
-                print('\nMISCLASSIFIED DOGS: \n Pet Image Label?: {} \n Classifier Label?: {}'.format(results_dic[key][0], results_dic[key][1]))
+            # Pet Image Label is a Dog - Classified as NOT-A-DOG -OR- 
+            # Pet Image Label is NOT-a-Dog - Classified as a-DOG
+            if ((results_dic[key][3] == 1) and (results_dic[key][4] == 0)):
+                print("\nPet label: {}, Classifier label: {}".format(results_dic[key][0], results_dic[key][1]))
                 
-    if print_incorrect_breed == True and (results_stats_dic['n_correct_dogs'] != results_stats_dic['n_correct_breed']):
-        for key in results_dic:   
-            if sum(results_dic[key][3:]) == 2 and results_dic[key][2] == 0:
-                print('\nMISCLASSIFIED BREEDS: \n Pet Image Label?: {} \n Classifier Label?: {}'.format(results_dic[key][0], results_dic[key][1]))
+            elif ((results_dic[key][3] == 0) and (results_dic[key][4] == 1)):
+                print("\nPet label: {}, Classifier label: {}".format(results_dic[key][0], results_dic[key][1]))
+
+    # IF print_incorrect_breed == True AND there were dogs whose breeds 
+    # were incorrectly classified - print out these cases                    
+    if (print_incorrect_breed and 
+        (results_stats_dic['n_correct_dogs'] != results_stats_dic['n_correct_breed']) 
+       ):
+        print("\nINCORRECT Dog Breed Assignment:")
+
+        # process through results dict, printing incorrectly classified breeds
+        for key in results_dic:
+
+            # Pet Image Label is-a-Dog, classified as-a-dog but is WRONG breed
+            if ( sum(results_dic[key][3:]) == 2 and
+                results_dic[key][2] == 0 ):
+                print("Real: {},   Classifier: {}".format(results_dic[key][0],
+                                                          results_dic[key][1]))
+    return None
